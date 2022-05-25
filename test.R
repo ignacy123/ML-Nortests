@@ -5,7 +5,8 @@ args = commandArgs(trailingOnly=TRUE)
 input_file = args[1]
 
 d = read.table(input_file, skip=2)
-expected = d[,ncol(d)]
+expected = d[,ncol(d)-1]
+d = d[,-ncol(d)]
 d = d[,-ncol(d)]
 
 tests = list(list(lillie.test, "Lillie"), 
@@ -22,6 +23,5 @@ for (test in tests) {
     nrow(d) - sum(bitwXor(guess, expected))
   }
   res = optimize(count_corr, c(0, 1), maximum=TRUE)
-  cat(res$maximum, "\n")
-  cat(res$objective, "\n")
+  cat(test[[2]], "| correct:", res$objective, "| optimal p-value:", res$maximum, "\n")
 }

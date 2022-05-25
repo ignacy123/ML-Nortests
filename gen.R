@@ -9,7 +9,7 @@ count = as.integer(args[1])
 n = as.integer(args[2])
 org_width = as.integer(args[3])
 file_conn = file(args[4], open = "wt")
-precision = 5
+precision = 20
 writeLines(c(as.character(count), as.character(n)), file_conn)
 
 distributions = list(
@@ -24,19 +24,18 @@ distributions = list(
   list(function(width) rcauchy(n, location = runif(1, -width, width)[[1]], scale = runif(1, 0, 100)[[1]]), "cauchy2"),
   list(function(width) rt(n, rdunif(1, 1, 10)[[1]]), "t_student"),
   list(function(width) rPareto(n, t = runif(1, 0, width)[[1]], alpha = runif(1, 0, 1)[[1]]), "pareto"),
-  list(function(width) rPareto(n, t = runif(1, 0, width)[[1]], alpha = runif(1, 0, 100)[[1]]), "pareto2"),
+  list(function(width) rPareto(n, t = runif(1, 0, width)[[1]], alpha = runif(1, 0, 50)[[1]]), "pareto2"),
   list(function(width) extraDistr::rgumbel(n, mu = runif(1, -width, width)[[1]], sigma = runif(1, 0, 10)[[1]]), "gumbel"),
   list(function(width) extraDistr::rgumbel(n, mu = runif(1, -width, width)[[1]], sigma = runif(1, 0, width)[[1]]), "gumbel2")
 )
 
 normals = list(
-  list(function(width) rnorm(n, mean = runif(1, -width, width)[[1]], sd = runif(1, 0, 10)[[1]]), "normal"),
   list(function(width) rnorm(n, mean = runif(1, -width, width)[[1]], sd = runif(1, 0, width)[[1]]), "normal2")
 )
 
 all_equal = function(x) {
   for (i in 1:length(x)) {
-    if (x[i] != x[1]) return(FALSE)
+    if (round(x[i], precision) != round(x[1], precision)) return(FALSE)
   }
   TRUE
 }

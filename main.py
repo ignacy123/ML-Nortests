@@ -8,7 +8,7 @@ from collections import Counter
 from keras.layers import Dropout
 
 LIMIT=10000000
-EPOCHS=100
+EPOCHS=1000
 BATCH_SIZE=128
 
 
@@ -48,15 +48,20 @@ with open(args.validation) as f:
 
 train = np.clip(train,-LIMIT,LIMIT)
 val = np.clip(val,-LIMIT,LIMIT)
+
 model = tf.keras.models.Sequential()
 
-model.add(tf.keras.layers.Flatten(input_shape=(train_n,)))
+model.add(tf.keras.layers.Dense(128, input_dim=train_n))
 
-model.add(tf.keras.layers.Dense(32, activation='leaky_relu'))
+model.add(tf.keras.layers.Dense(256, activation='leaky_relu', kernel_initializer='he_uniform'))
 
-model.add(tf.keras.layers.Dense(16, activation='leaky_relu'))
+model.add(tf.keras.layers.Dense(128, activation='leaky_relu', kernel_initializer='he_uniform'))
 
-model.add(tf.keras.layers.Dense(8, activation='leaky_relu'))
+model.add(tf.keras.layers.Dense(64, activation='leaky_relu', kernel_initializer='he_uniform'))
+
+model.add(tf.keras.layers.Dense(16, activation='leaky_relu', kernel_initializer='he_uniform'))
+
+model.add(tf.keras.layers.Dense(8, activation='leaky_relu', kernel_initializer='he_uniform'))
 
 model.add(tf.keras.layers.Dense(1, activation="sigmoid"))
 
@@ -73,10 +78,10 @@ print("The model was trained on the following probes:")
 pprint.pp(Counter(train_distr))
 print("The model was validated on the following probes:")
 pprint.pp(Counter(val_distr))
-print("Following probes were guessed correctly at the end:")
-pprint.pp(Counter(correct))
-print("Following probes were not guessed correctly at the end:")
-pprint.pp(Counter(val_distr) - Counter(correct))
+print("Validation probes prediction accuracy of the trained model:")
+counter_distr = Counter(val_distr)
+counter_correct = Counter(correct)
+pprint.pp({key: str(int(counter_correct[key]/counter_distr[key] * 100)) + "%" for key in counter_distr})
 
-print(f"Accuracy: { int(len(correct)/len(val) * 100) }%")
+print(f"Total Accuracy: { int(len(correct)/len(val) * 100) }%")
 
