@@ -30,6 +30,7 @@ for (test in tests) {
   guess[guess != 1] = 0
   df = data.frame(guess = bitwXor(guess, expected), distr = distr)
   cat(test[[2]], "| correct:", round(correct/nrow(d), 2) * 100, "% | optimal p-value:", alpha, "\n")
-  print(round(table(subset(df, guess == 0)$distr)/table(df$distr), 2), width=120)
+  accuracy = sort(round(table(subset(df, guess == 0)$distr)/table(df$distr), 2))
+  print(accuracy, width=140)
   cat("\n")
 }

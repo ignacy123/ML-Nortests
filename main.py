@@ -6,7 +6,7 @@ import random
 from collections import Counter
 
 LIMIT=10000000
-EPOCHS=100
+EPOCHS=200
 BATCH_SIZE=128
 
 
