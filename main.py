@@ -2,10 +2,11 @@ import tensorflow as tf
 import numpy as np
 import argparse
 import pprint
+import random
 from collections import Counter
 
 LIMIT=10000000
-EPOCHS=1
+EPOCHS=100
 BATCH_SIZE=128
 
 
@@ -27,7 +28,6 @@ with open(args.validation) as f:
         numbers, distr_name = line.rsplit(" ", 1)
         val_distr.append(distr_name[:-1])
         val[i, :] = np.fromstring(numbers, sep = " ", dtype=float)
-    np.random.shuffle(val)
     val_res = val[:, -1]
     val = np.delete(val, np.s_[-1:], axis=1)
     val = np.clip(val,-LIMIT,LIMIT)
@@ -38,12 +38,12 @@ if args.train:
         train_n = int(f.readline())
         train_distr = []
         train = np.zeros([train_count, train_n + 1])
-        for i in range (train_count):
-            line = f.readline()
+        data = f.readlines()
+        random.shuffle(data)
+        for i, line in enumerate(data):
             numbers, distr_name = line.rsplit(" ", 1)
             train_distr.append(distr_name[:-1])
             train[i, :] = np.fromstring(numbers, sep = " ", dtype=float)
-        np.random.shuffle(train)
         train_res = train[:, -1]
         train = np.delete(train, np.s_[-1:], axis=1)
         train = np.clip(train,-LIMIT,LIMIT)
@@ -83,11 +83,12 @@ correct = []
 for res, expected, distr in zip(model.predict(val), val_res, val_distr):
     if (res >= 1/2 and expected) or  (res < 1/2 and not expected):
         correct.append(distr)
-print("The model was validated on the following probes:")
-pprint.pp(Counter(val_distr))
-print("Validation probes prediction accuracy of the trained model:")
+        
 counter_distr = Counter(val_distr)
 counter_correct = Counter(correct)
+print("The model was validated on the following probes:")
+pprint.pp(counter_distr)
+print("Validation probes prediction accuracy of the trained model:")
 pprint.pp({key: str(int(counter_correct[key]/counter_distr[key] * 100)) + "%" for key in counter_distr})
 
 print(f"Total Accuracy: { int(len(correct)/len(val) * 100) }%")

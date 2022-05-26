@@ -30,7 +30,7 @@ distributions = list(
 )
 
 normals = list(
-  list(function(width) rnorm(n, mean = runif(1, -width, width)[[1]], sd = runif(1, 0, width)[[1]]), "normal2")
+  list(function(width) rnorm(n, mean = runif(1, -width, width)[[1]], sd = runif(1, 0, width)[[1]]), "normal")
 )
 
 all_equal = function(x) {
