@@ -5,7 +5,7 @@ import pprint
 import random
 from collections import Counter
 
-LIMIT=10000000
+LIMIT=1000000000
 EPOCHS=200
 BATCH_SIZE=128
 

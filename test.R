@@ -17,6 +17,7 @@ tests = list(list(lillie.test, "Lillie"),
 
 for (test in tests) {
   guess = apply(d, 1, function(x) test[[1]](x)$p.value)
+  
   count_corr = function(alpha) {
     guess[guess >= alpha] = 1
     guess[guess != 1] = 0
